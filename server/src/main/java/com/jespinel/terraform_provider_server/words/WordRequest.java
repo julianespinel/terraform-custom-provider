@@ -7,5 +7,6 @@ import lombok.Value;
 @Value
 public class WordRequest {
 
-    @NotBlank(message = "word is required") String word;
+    @NotBlank(message = "word is required")
+    private String word;
 }
