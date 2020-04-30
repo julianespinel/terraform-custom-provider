@@ -2,11 +2,11 @@ package com.jespinel.terraform_provider_server.words;
 
 import java.util.UUID;
 
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 public class WordResponse {
 
-    private final UUID id;
-    private final String word;
+    private UUID id;
+    private String word;
 }
