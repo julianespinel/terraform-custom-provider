@@ -38,8 +38,8 @@ You can use the custom provider by executing the following commands:
 
 1. Make sure the server is running. See: [Server install and run](../server/README.md#install-and-run)
 1. `go build -o terraform-provider-words`
-    1. Create the provider binary: the name of the binary must follow this convention: terraform-<TYPE>-<NAME>
-1. `terraform init`: Download and install providers used in the configuration
+    1. Create the provider binary: the name of the binary must follow this convention: `terraform-<TYPE>-<NAME>`
+1. `terraform init`: Download and install providers used in the Terraform configuration file (`main.tf`)
 
 ### Create a word
 
