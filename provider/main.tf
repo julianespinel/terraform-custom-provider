@@ -1,3 +1,3 @@
-resource "words_word" "first-word" {
+resource "words_word" "my-word" {
     value = "hello"
 }
