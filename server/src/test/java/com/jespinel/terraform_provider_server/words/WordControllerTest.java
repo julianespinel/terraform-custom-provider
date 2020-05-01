@@ -99,6 +99,10 @@ class WordControllerTest extends TerraformProviderServerApplicationTests {
 
         MockHttpServletResponse responseTwo = mockMvc.perform(request).andReturn().getResponse();
         assertThat(responseTwo.getStatus(), is(HttpStatus.CONFLICT.value()));
+
+        JsonNode responseBody = getResponseBody(responseTwo);
+        String errorMessage = responseBody.get("message").asText();
+        assertThat(errorMessage, is("The word 'hello' already exists"));
     }
 
     @Test
@@ -145,7 +149,7 @@ class WordControllerTest extends TerraformProviderServerApplicationTests {
 
         JsonNode responseBody = getResponseBody(getResponse);
         String errorMessage = responseBody.get("message").asText();
-        assertThat(errorMessage, is(String.format("The word with ID %s does not exist", wordId)));
+        assertThat(errorMessage, is(String.format("The word with ID '%s' does not exist", wordId)));
     }
 
     @Test
@@ -202,7 +206,7 @@ class WordControllerTest extends TerraformProviderServerApplicationTests {
 
         JsonNode responseBody = getResponseBody(getResponse);
         String errorMessage = responseBody.get("message").asText();
-        assertThat(errorMessage, is(String.format("The word with ID %s does not exist", wordId)));
+        assertThat(errorMessage, is(String.format("The word with ID '%s' does not exist", wordId)));
     }
 
     @Test

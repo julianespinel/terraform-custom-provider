@@ -41,7 +41,8 @@ public class WordController {
         LOGGER.info("Create word: {}", word);
 
         if (words.containsValue(word)) {
-            String errorMessage = String.format("The word already %s exists", word);
+            String errorMessage = String.format("The word '%s' already exists", word);
+            LOGGER.error(errorMessage);
             throw new APIException(HttpStatus.CONFLICT, errorMessage);
         }
 
@@ -55,7 +56,8 @@ public class WordController {
     public ResponseEntity<WordResponse> read(@PathVariable UUID id) throws APIException {
         LOGGER.info("Read word with ID: {}", id);
         if (!words.containsKey(id)) {
-            String errorMessage = String.format("The word with ID %s does not exist", id);
+            String errorMessage = String.format("The word with ID '%s' does not exist", id);
+            LOGGER.error(errorMessage);
             throw new APIException(HttpStatus.NOT_FOUND, errorMessage);
         }
 
@@ -69,7 +71,8 @@ public class WordController {
 
         LOGGER.info("Update word with ID: {}", id);
         if (!words.containsKey(id)) {
-            String errorMessage = String.format("The word with ID %s does not exist", id);
+            String errorMessage = String.format("The word with ID '%s' does not exist", id);
+            LOGGER.error(errorMessage);
             throw new APIException(HttpStatus.NOT_FOUND, errorMessage);
         }
 
