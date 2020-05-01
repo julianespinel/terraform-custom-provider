@@ -78,7 +78,7 @@ public class WordController {
 
         String oldWord = words.get(id);
         String newWord = request.getWord();
-        LOGGER.info("Updating {} by {}", oldWord, newWord);
+        LOGGER.info("Updating '{}' by '{}'", oldWord, newWord);
 
         words.put(id, newWord);
         return ResponseEntity.ok(new WordResponse(id, newWord));
