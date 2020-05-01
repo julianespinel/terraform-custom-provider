@@ -16,8 +16,8 @@ This repository contains two main pieces of code:
 ## Usage
 
 1. Clone this repository: `git clone git@github.com:julianespinel/terraform-custom-provider.git`
-1. Start the server by following these [instructions](./server/README.md)
-1. Use the custom Terraform provider by following these [instructions](./provider/README.md)
+1. Start the server by following these [instructions](./server/README.md#install-and-run)
+1. Use the custom Terraform provider by following these [steps](./provider/README.md#usage)
 
 ## Resources
 

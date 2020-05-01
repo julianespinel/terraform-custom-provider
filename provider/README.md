@@ -28,7 +28,7 @@ The following tree shows the structure of the provider and what is the responsib
 
 You can use the custom provider by executing the following commands:
 
-1. Make sure the server is running. See: [Server install and run](../server/README.md)
+1. Make sure the server is running. See: [Server install and run](../server/README.md#install-and-run)
 1. `go build -o terraform-provider-words` (Create the provider binary)
 1. `terraform init`
 
