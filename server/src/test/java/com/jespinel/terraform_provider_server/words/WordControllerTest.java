@@ -37,7 +37,7 @@ class WordControllerTest extends TerraformProviderServerApplicationTests {
     }
 
     @Test
-    void whenCreatingANonEmptyWord_Return202() throws Exception {
+    void whenCreatingANonEmptyWord_Return201() throws Exception {
         WordRequest wordRequest = new WordRequest("hello");
         String json = MAPPER.writeValueAsString(wordRequest);
 
