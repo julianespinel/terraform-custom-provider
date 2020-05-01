@@ -26,6 +26,14 @@ The following tree shows the structure of the provider and what is the responsib
 
 ## Usage
 
+**Important note about provider logs**
+
+To be able to see the logs from the custom provider please do the following: `export TF_LOG=TRACE`<br>
+Then after you enter a Terraform command in the terminal, search for the lines containing:
+```bash
+plugin.terraform-provider-words
+```
+
 You can use the custom provider by executing the following commands:
 
 1. Make sure the server is running. See: [Server install and run](../server/README.md#install-and-run)
