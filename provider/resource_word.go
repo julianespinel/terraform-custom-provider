@@ -55,7 +55,11 @@ func resourceWordCreate(d *schema.ResourceData, m interface{}) error {
 
 	wordResponse := getWordResponse(resp)
 	d.SetId(wordResponse.Id)
-	//return resourceWordRead(d, m)
+	/*
+	 * Why return nil?
+	 * Please take a look at the rules for update the state in Terraform defined here:
+	 * https://www.terraform.io/docs/extend/writing-custom-providers.html#error-handling-amp-partial-state
+	 */
 	return nil
 }
 
@@ -101,7 +105,6 @@ func resourceWordUpdate(d *schema.ResourceData, m interface{}) error {
 
 	wordResponse := getWordResponse(resp)
 	d.SetId(wordResponse.Id)
-	//return resourceWordRead(d, m)
 	return nil
 }
 
