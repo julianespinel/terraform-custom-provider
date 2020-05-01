@@ -82,7 +82,7 @@ You should see the following line in the server log:
 ```bash
 INFO 67068 --- [nio-8010-exec-4] c.j.t.words.WordController               : Read word with ID: d7a22890-8aee-4c89-bbcc-4b6178f733f7
 INFO 67068 --- [nio-8010-exec-5] c.j.t.words.WordController               : Update word with ID: d7a22890-8aee-4c89-bbcc-4b6178f733f7
-INFO 67068 --- [nio-8010-exec-5] c.j.t.words.WordController               : Updating hello by bye
+INFO 67068 --- [nio-8010-exec-5] c.j.t.words.WordController               : Updating 'hello' by 'bye'
 ```
 
 ### Delete a word
