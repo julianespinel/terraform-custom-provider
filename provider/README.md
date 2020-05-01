@@ -37,8 +37,9 @@ plugin.terraform-provider-words
 You can use the custom provider by executing the following commands:
 
 1. Make sure the server is running. See: [Server install and run](../server/README.md#install-and-run)
-1. `go build -o terraform-provider-words` (Create the provider binary)
-1. `terraform init`
+1. `go build -o terraform-provider-words`
+    1. Create the provider binary: the name of the binary must follow this convention: terraform-<TYPE>-<NAME>
+1. `terraform init`: Download and install providers used in the configuration
 
 ### Create a word
 
@@ -50,8 +51,8 @@ resource "words_word" "my-word" {
 }
 ```
 
-1. `terraform plan`
-1. `terraform apply`
+1. `terraform plan`: Create and show the execution plan
+1. `terraform apply`: Execute the plan
 
 You should see the following line in the server log:
 
