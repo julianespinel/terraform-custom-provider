@@ -53,7 +53,11 @@ func resourceWordCreate(d *schema.ResourceData, m interface{}) error {
 		return errors.New(responseBody)
 	}
 
-	wordResponse := getWordResponse(resp)
+	wordResponse, err := getWordResponse(resp)
+	if err != nil {
+		log.WithError(err).Error("resourceWordCreate")
+		return err
+	}
 	d.SetId(wordResponse.Id)
 	/*
 	 * Why return nil?
@@ -103,7 +107,11 @@ func resourceWordUpdate(d *schema.ResourceData, m interface{}) error {
 		return errors.New(responseBody)
 	}
 
-	wordResponse := getWordResponse(resp)
+	wordResponse, err := getWordResponse(resp)
+	if err != nil {
+		log.WithError(err).Error("resourceWordUpdate")
+		return err
+	}
 	d.SetId(wordResponse.Id)
 	return nil
 }
@@ -125,11 +133,12 @@ func resourceWordDelete(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func getWordResponse(resp *http.Response) WordResponse {
+func getWordResponse(resp *http.Response) (WordResponse, error) {
 	wordResponse := WordResponse{}
 	err := json.NewDecoder(resp.Body).Decode(&wordResponse)
 	if err != nil {
-		log.Error(err)
+		log.WithError(err).Error("getWordResponse")
+		return wordResponse, err
 	}
-	return wordResponse
+	return wordResponse, nil
 }
