@@ -43,7 +43,7 @@ func resourceWordCreate(d *schema.ResourceData, m interface{}) error {
 	json.NewEncoder(buffer).Encode(wordRequest)
 	resp, err := http.Post(WordsUrl, ContentType, buffer)
 	if err != nil {
-		log.Error(err)
+		log.WithError(err).Error("resourceWordCreate")
 		return err
 	}
 
@@ -73,7 +73,7 @@ func resourceWordRead(d *schema.ResourceData, m interface{}) error {
 	resp, err := http.Get(wordURL)
 
 	if err != nil {
-		log.Error(err)
+		log.WithError(err).Error("resourceWordRead")
 		return err
 	}
 
@@ -97,7 +97,7 @@ func resourceWordUpdate(d *schema.ResourceData, m interface{}) error {
 	wordURL := fmt.Sprintf(SingleWordUrl, d.Id())
 	resp, err := httpPut(wordURL, buffer)
 	if err != nil {
-		log.Error(err)
+		log.WithError(err).Error("resourceWordUpdate")
 		return err
 	}
 
@@ -120,7 +120,7 @@ func resourceWordDelete(d *schema.ResourceData, m interface{}) error {
 	log.Info("Deleting word")
 	resp, err := httpDelete(d.Id())
 	if err != nil {
-		log.Error(err)
+		log.WithError(err).Error("resourceWordDelete")
 		return err
 	}
 

@@ -11,8 +11,8 @@ import (
 func httpPut(wordURL string, buffer *bytes.Buffer) (*http.Response, error) {
 	req, err := putRequest(wordURL, buffer)
 	if err != nil {
+		log.WithError(err).Error("httpPut")
 		return nil, err
-		log.Error(err)
 	}
 
 	client := &http.Client{}
@@ -22,7 +22,7 @@ func httpPut(wordURL string, buffer *bytes.Buffer) (*http.Response, error) {
 func putRequest(wordURL string, buffer *bytes.Buffer) (*http.Request, error) {
 	req, err := http.NewRequest(http.MethodPut, wordURL, buffer)
 	if err != nil {
-		log.Error(err)
+		log.WithError(err).Error("putRequest")
 		return nil, err
 	}
 	req.Header.Set("Content-Type", ContentType)
@@ -32,7 +32,7 @@ func putRequest(wordURL string, buffer *bytes.Buffer) (*http.Request, error) {
 func httpDelete(id string) (*http.Response, error) {
 	req, err := deleteRequest(id)
 	if err != nil {
-		log.Error(err)
+		log.WithError(err).Error("httpDelete")
 		return nil, err
 	}
 
@@ -44,7 +44,7 @@ func deleteRequest(id string) (*http.Request, error) {
 	wordURL := fmt.Sprintf(SingleWordUrl, id)
 	req, err := http.NewRequest(http.MethodDelete, wordURL, nil)
 	if err != nil {
-		log.Error(err)
+		log.WithError(err).Error("deleteRequest")
 		return nil, err
 	}
 	req.Header.Set("Content-Type", ContentType)
