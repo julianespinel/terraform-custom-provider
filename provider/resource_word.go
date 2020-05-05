@@ -84,6 +84,13 @@ func resourceWordRead(d *schema.ResourceData, m interface{}) error {
 		return errors.New(responseBody)
 	}
 
+	wordResponse, err := getWordResponse(resp)
+	if err != nil {
+		log.WithError(err).Error("resourceWordRead")
+		return err
+	}
+
+	d.Set("value", wordResponse.Word)
 	return nil
 }
 
