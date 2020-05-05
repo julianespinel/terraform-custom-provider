@@ -62,6 +62,7 @@ public class WordController {
         }
 
         String word = words.get(id);
+        LOGGER.info("Read word with ID: {}, value: {}", id, word);
         return ResponseEntity.ok(new WordResponse(id, word));
     }
 
