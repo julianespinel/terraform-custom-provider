@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -26,7 +27,7 @@ func resourceBook() *schema.Resource {
 
 		// Define the fields of this schema.
 		Schema: map[string]*schema.Schema{
-			"bookId": &schema.Schema{
+			"book_id": &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
 			},
@@ -161,7 +162,8 @@ func getBookResponse(resp *http.Response) (BookResponse, error) {
 }
 
 func setId(d *schema.ResourceData, bookResponse BookResponse) {
-	d.SetId(bookResponse.Title)
-	d.Set("bookId", bookResponse.Id)
+	noSpacesTitle := strings.ReplaceAll(bookResponse.Title, " ", "_")
+	d.SetId(strings.ToLower(noSpacesTitle))
+	d.Set("book_id", bookResponse.Id)
 	d.Set("title", bookResponse.Title)
 }
