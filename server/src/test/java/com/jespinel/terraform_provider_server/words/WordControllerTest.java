@@ -3,6 +3,7 @@ package com.jespinel.terraform_provider_server.words;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jespinel.terraform_provider_server.TerraformProviderServerApplicationTests;
+import com.jespinel.terraform_provider_server.commons.JsonHelpers;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -50,7 +50,7 @@ class WordControllerTest extends TerraformProviderServerApplicationTests {
         MockHttpServletResponse createResponse = mockMvc.perform(request).andReturn().getResponse();
         assertThat(createResponse.getStatus(), is(HttpStatus.CREATED.value()));
 
-        JsonNode createResponseBody = getResponseBody(createResponse);
+        JsonNode createResponseBody = JsonHelpers.getResponseBody(createResponse);
         String wordId = createResponseBody.get("id").asText();
         assertThat(wordId, not(emptyOrNullString()));
     }
@@ -69,17 +69,11 @@ class WordControllerTest extends TerraformProviderServerApplicationTests {
         MockHttpServletResponse response = mockMvc.perform(request).andReturn().getResponse();
         assertThat(response.getStatus(), is(HttpStatus.BAD_REQUEST.value()));
 
-        JsonNode responseBody = getResponseBody(response);
+        JsonNode responseBody = JsonHelpers.getResponseBody(response);
         JsonNode errors = responseBody.get("errors");
         assertThat(errors.size(), is(1));
         JsonNode error = errors.get(0);
         assertThat(error.get("word").asText(), is("word is required"));
-    }
-
-    private JsonNode getResponseBody(final MockHttpServletResponse response) throws UnsupportedEncodingException,
-        com.fasterxml.jackson.core.JsonProcessingException {
-        String responseBody = response.getContentAsString();
-        return MAPPER.readValue(responseBody, JsonNode.class);
     }
 
     @Test
@@ -100,7 +94,7 @@ class WordControllerTest extends TerraformProviderServerApplicationTests {
         MockHttpServletResponse responseTwo = mockMvc.perform(request).andReturn().getResponse();
         assertThat(responseTwo.getStatus(), is(HttpStatus.CONFLICT.value()));
 
-        JsonNode responseBody = getResponseBody(responseTwo);
+        JsonNode responseBody = JsonHelpers.getResponseBody(responseTwo);
         String errorMessage = responseBody.get("message").asText();
         assertThat(errorMessage, is("The word 'hello' already exists"));
     }
@@ -120,7 +114,7 @@ class WordControllerTest extends TerraformProviderServerApplicationTests {
         MockHttpServletResponse createResponse = mockMvc.perform(create).andReturn().getResponse();
         assertThat(createResponse.getStatus(), is(HttpStatus.CREATED.value()));
 
-        JsonNode createResponseBody = getResponseBody(createResponse);
+        JsonNode createResponseBody = JsonHelpers.getResponseBody(createResponse);
         String wordId = createResponseBody.get("id").asText();
 
         MockHttpServletRequestBuilder get = MockMvcRequestBuilders
@@ -131,7 +125,7 @@ class WordControllerTest extends TerraformProviderServerApplicationTests {
         MockHttpServletResponse getResponse = mockMvc.perform(get).andReturn().getResponse();
         assertThat(getResponse.getStatus(), is(HttpStatus.OK.value()));
 
-        JsonNode getResponseBody = getResponseBody(getResponse);
+        JsonNode getResponseBody = JsonHelpers.getResponseBody(getResponse);
         assertThat(getResponseBody.get("id").asText(), is(wordId));
         assertThat(getResponseBody.get("word").asText(), is(word));
     }
@@ -147,7 +141,7 @@ class WordControllerTest extends TerraformProviderServerApplicationTests {
         MockHttpServletResponse getResponse = mockMvc.perform(get).andReturn().getResponse();
         assertThat(getResponse.getStatus(), is(HttpStatus.NOT_FOUND.value()));
 
-        JsonNode responseBody = getResponseBody(getResponse);
+        JsonNode responseBody = JsonHelpers.getResponseBody(getResponse);
         String errorMessage = responseBody.get("message").asText();
         assertThat(errorMessage, is(String.format("The word with ID '%s' does not exist", wordId)));
     }
@@ -167,7 +161,7 @@ class WordControllerTest extends TerraformProviderServerApplicationTests {
         MockHttpServletResponse createResponse = mockMvc.perform(create).andReturn().getResponse();
         assertThat(createResponse.getStatus(), is(HttpStatus.CREATED.value()));
 
-        JsonNode createResponseBody = getResponseBody(createResponse);
+        JsonNode createResponseBody = JsonHelpers.getResponseBody(createResponse);
         String wordId = createResponseBody.get("id").asText();
 
         String updatedWord = "hello2";
@@ -183,7 +177,7 @@ class WordControllerTest extends TerraformProviderServerApplicationTests {
         MockHttpServletResponse getResponse = mockMvc.perform(put).andReturn().getResponse();
         assertThat(getResponse.getStatus(), is(HttpStatus.OK.value()));
 
-        JsonNode getResponseBody = getResponseBody(getResponse);
+        JsonNode getResponseBody = JsonHelpers.getResponseBody(getResponse);
         assertThat(getResponseBody.get("id").asText(), is(wordId));
         assertThat(getResponseBody.get("word").asText(), is(updatedWord));
     }
@@ -204,7 +198,7 @@ class WordControllerTest extends TerraformProviderServerApplicationTests {
         MockHttpServletResponse getResponse = mockMvc.perform(put).andReturn().getResponse();
         assertThat(getResponse.getStatus(), is(HttpStatus.NOT_FOUND.value()));
 
-        JsonNode responseBody = getResponseBody(getResponse);
+        JsonNode responseBody = JsonHelpers.getResponseBody(getResponse);
         String errorMessage = responseBody.get("message").asText();
         assertThat(errorMessage, is(String.format("The word with ID '%s' does not exist", wordId)));
     }
@@ -224,7 +218,7 @@ class WordControllerTest extends TerraformProviderServerApplicationTests {
         MockHttpServletResponse createResponse = mockMvc.perform(create).andReturn().getResponse();
         assertThat(createResponse.getStatus(), is(HttpStatus.CREATED.value()));
 
-        JsonNode createResponseBody = getResponseBody(createResponse);
+        JsonNode createResponseBody = JsonHelpers.getResponseBody(createResponse);
         String wordId = createResponseBody.get("id").asText();
 
         MockHttpServletRequestBuilder delete = MockMvcRequestBuilders
