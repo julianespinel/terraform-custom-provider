@@ -110,7 +110,9 @@ public class BookController {
      */
     private boolean containsTitle(final String title) {
         for (final Book book : books.values()) {
-            return book.getTitle().equalsIgnoreCase(title);
+            if (book.getTitle().equalsIgnoreCase(title)) {
+                return true;
+            }
         }
         return false;
     }
