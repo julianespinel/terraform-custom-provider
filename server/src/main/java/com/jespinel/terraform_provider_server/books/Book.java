@@ -2,8 +2,6 @@ package com.jespinel.terraform_provider_server.books;
 
 import java.util.UUID;
 
-import javax.validation.constraints.NotBlank;
-
 import lombok.Value;
 
 @Value
