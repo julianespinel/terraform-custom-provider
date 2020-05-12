@@ -13,7 +13,6 @@ import (
 const (
 	WordsUrl      = "http://localhost:8010/words"
 	SingleWordUrl = WordsUrl + "/%s"
-	ContentType   = "application/json"
 )
 
 // Returns the resource represented by this file.
