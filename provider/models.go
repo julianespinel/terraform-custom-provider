@@ -5,6 +5,8 @@ package main
  * otherwise the JSON serialization will fail.
  */
 
+// Word
+
 type WordRequest struct {
 	Word string `json:"word"`
 }
@@ -12,4 +14,17 @@ type WordRequest struct {
 type WordResponse struct {
 	Id   string `json:"id"`
 	Word string `json:"word"`
+}
+
+// Book
+
+type BookRequest struct {
+	Title string `json:"title"`
+	Author string `json:"author"`
+}
+
+type BookResponse struct {
+	Id   string `json:"id"`
+	Title string `json:"title"`
+	Author string `json:"author"`
 }

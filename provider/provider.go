@@ -8,7 +8,8 @@ func Provider() *schema.Provider {
 	return &schema.Provider{
 		// Add the resources supported by this provider to this map.
 		ResourcesMap: map[string]*schema.Resource{
-			"words_word": resourceWord(),
+			"dummy_word": resourceWord(),
+			"dummy_book": resourceBook(),
 		},
 	}
 }
