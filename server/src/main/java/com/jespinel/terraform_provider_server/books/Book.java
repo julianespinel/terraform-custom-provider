@@ -10,10 +10,6 @@ import lombok.Value;
 public class Book {
 
     private final UUID id;
-
-    @NotBlank(message = "title is required")
     private final String title;
-
-    @NotBlank(message = "author is required")
     private final String author;
 }

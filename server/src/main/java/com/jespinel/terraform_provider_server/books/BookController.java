@@ -39,7 +39,7 @@ public class BookController {
     public ResponseEntity<Book> create(@Valid @RequestBody BookRequest request) throws APIException {
         String title = request.getTitle();
         String author = request.getAuthor();
-        LOGGER.info("Create book: {}, from author: {}", title, author);
+        LOGGER.info("Create book: {}", request);
 
         if (containsTitle(title)) {
             String errorMessage = String.format("The book '%s' already exists", title);

@@ -58,6 +58,27 @@ class BookControllerTest extends TerraformProviderServerApplicationTests {
     }
 
     @Test
+    void whenCreatingABookWithNoAutor_Return201() throws Exception {
+        String title = "Brave new world";
+        String author = "";
+        BookRequest bookRequest = new BookRequest(title, author);
+        String json = MAPPER.writeValueAsString(bookRequest);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+            .post("/books")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json);
+
+        MockHttpServletResponse createResponse = mockMvc.perform(request).andReturn().getResponse();
+        assertThat(createResponse.getStatus(), is(HttpStatus.CREATED.value()));
+
+        JsonNode createResponseBody = JsonHelpers.getResponseBody(createResponse);
+        String wordId = createResponseBody.get("id").asText();
+        assertThat(wordId, not(emptyOrNullString()));
+    }
+
+    @Test
     void whenCreatingABookWithEmptyTitle_Return400() throws Exception {
         String title = "";
         String author = "Aldous Huxley";
