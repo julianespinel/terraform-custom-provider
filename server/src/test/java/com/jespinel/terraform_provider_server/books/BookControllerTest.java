@@ -58,7 +58,7 @@ class BookControllerTest extends TerraformProviderServerApplicationTests {
     }
 
     @Test
-    void whenCreatingABookWithNoAutor_Return201() throws Exception {
+    void whenCreatingABookWithNoAuthor_Return201() throws Exception {
         String title = "Brave new world";
         String author = "";
         BookRequest bookRequest = new BookRequest(title, author);
