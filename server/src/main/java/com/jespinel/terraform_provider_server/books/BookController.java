@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -41,7 +43,8 @@ public class BookController {
         String author = request.getAuthor();
         LOGGER.info("Create book: {}", request);
 
-        if (containsTitle(title)) {
+        Optional<Book> existingBook = getBookByTitle(title);
+        if (existingBook.isPresent()) {
             String errorMessage = String.format("The book '%s' already exists", title);
             LOGGER.error(errorMessage);
             throw new APIException(HttpStatus.CONFLICT, errorMessage);
@@ -66,6 +69,20 @@ public class BookController {
         Book book = books.get(id);
         LOGGER.info("Read book: {}", book);
         return ResponseEntity.ok(book);
+    }
+
+    @GetMapping
+    public ResponseEntity<Book> readByTitle(@RequestParam String title) throws APIException {
+        LOGGER.info("Read book by title: {}", title);
+        Optional<Book> book = getBookByTitle(title);
+        if (!book.isPresent()) {
+            String errorMessage = String.format("The book with title '%s' does not exist", title);
+            LOGGER.error(errorMessage);
+            throw new APIException(HttpStatus.NOT_FOUND, errorMessage);
+        }
+
+        LOGGER.info("Read book: {}", book.get());
+        return ResponseEntity.ok(book.get());
     }
 
     @PutMapping("/{id}")
@@ -103,17 +120,18 @@ public class BookController {
     }
 
     /**
-     * Check if we already have a book with the same title.
+     * Returns an Optional<Book> if there is a book with the same title in the cache,
+     * otherwise returns an empty optional.
      *
      * @param title Title of a book.
-     * @return True if the cache contains the book title, otherwise returns false.
+     * @return A book if the cache contains the book title, otherwise returns an empty optional.
      */
-    private boolean containsTitle(final String title) {
+    private Optional<Book> getBookByTitle(final String title) {
         for (final Book book : books.values()) {
             if (book.getTitle().equalsIgnoreCase(title)) {
-                return true;
+                return Optional.of(book);
             }
         }
-        return false;
+        return Optional.empty();
     }
 }
