@@ -171,7 +171,58 @@ class BookControllerTest extends TerraformProviderServerApplicationTests {
 
         JsonNode responseBody = JsonHelpers.getResponseBody(getResponse);
         String errorMessage = responseBody.get("message").asText();
-        assertThat(errorMessage, is(String.format("The book with ID '%s' does not exist", wordId)));
+        assertThat(errorMessage, is(String.format("The book with ID '%s' does not exist", bookId)));
+    }
+
+    @Test
+    void whenReadingAnExistingBookByTitle_return200() throws Exception {
+        String title = "Brave new world";
+        String author = "Aldous Huxley";
+        BookRequest bookRequest = new BookRequest(title, author);
+        String json = MAPPER.writeValueAsString(bookRequest);
+
+        MockHttpServletRequestBuilder create = MockMvcRequestBuilders
+            .post("/books")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json);
+
+        MockHttpServletResponse createResponse = mockMvc.perform(create).andReturn().getResponse();
+        assertThat(createResponse.getStatus(), is(HttpStatus.CREATED.value()));
+
+        JsonNode createResponseBody = JsonHelpers.getResponseBody(createResponse);
+        String bookId = createResponseBody.get("id").asText();
+
+        MockHttpServletRequestBuilder get = MockMvcRequestBuilders
+            .get(String.format("/books"))
+            .param("title", title)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MockHttpServletResponse getResponse = mockMvc.perform(get).andReturn().getResponse();
+        assertThat(getResponse.getStatus(), is(HttpStatus.OK.value()));
+
+        JsonNode getResponseBody = JsonHelpers.getResponseBody(getResponse);
+        assertThat(getResponseBody.get("id").asText(), is(bookId));
+        assertThat(getResponseBody.get("title").asText(), is(title));
+        assertThat(getResponseBody.get("author").asText(), is(author));
+    }
+
+    @Test
+    void whenReadingANonExistingBookByTitle_return404() throws Exception {
+        String title = "Brave new world";
+        MockHttpServletRequestBuilder get = MockMvcRequestBuilders
+            .get(String.format("/books/"))
+            .param("title", title)
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON);
+
+        MockHttpServletResponse getResponse = mockMvc.perform(get).andReturn().getResponse();
+        assertThat(getResponse.getStatus(), is(HttpStatus.NOT_FOUND.value()));
+
+        JsonNode responseBody = JsonHelpers.getResponseBody(getResponse);
+        String errorMessage = responseBody.get("message").asText();
+        assertThat(errorMessage, is(String.format("The book with title '%s' does not exist", title)));
     }
 
     @Test
