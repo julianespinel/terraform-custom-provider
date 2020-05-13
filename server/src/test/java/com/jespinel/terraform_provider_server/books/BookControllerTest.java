@@ -53,8 +53,8 @@ class BookControllerTest extends TerraformProviderServerApplicationTests {
         assertThat(createResponse.getStatus(), is(HttpStatus.CREATED.value()));
 
         JsonNode createResponseBody = JsonHelpers.getResponseBody(createResponse);
-        String wordId = createResponseBody.get("id").asText();
-        assertThat(wordId, not(emptyOrNullString()));
+        String bookId = createResponseBody.get("id").asText();
+        assertThat(bookId, not(emptyOrNullString()));
     }
 
     @Test
@@ -74,8 +74,8 @@ class BookControllerTest extends TerraformProviderServerApplicationTests {
         assertThat(createResponse.getStatus(), is(HttpStatus.CREATED.value()));
 
         JsonNode createResponseBody = JsonHelpers.getResponseBody(createResponse);
-        String wordId = createResponseBody.get("id").asText();
-        assertThat(wordId, not(emptyOrNullString()));
+        String bookId = createResponseBody.get("id").asText();
+        assertThat(bookId, not(emptyOrNullString()));
     }
 
     @Test
@@ -160,9 +160,9 @@ class BookControllerTest extends TerraformProviderServerApplicationTests {
 
     @Test
     void whenReadingANonExistingBook_return404() throws Exception {
-        String wordId = UUID.randomUUID().toString();
+        String bookId = UUID.randomUUID().toString();
         MockHttpServletRequestBuilder get = MockMvcRequestBuilders
-            .get(String.format("/books/%s", wordId))
+            .get(String.format("/books/%s", bookId))
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON);
 
@@ -220,9 +220,9 @@ class BookControllerTest extends TerraformProviderServerApplicationTests {
         BookRequest bookRequest = new BookRequest(title, author);
         String updatedJson = MAPPER.writeValueAsString(bookRequest);
 
-        String wordId = UUID.randomUUID().toString();
+        String bookId = UUID.randomUUID().toString();
         MockHttpServletRequestBuilder put = MockMvcRequestBuilders
-            .put(String.format("/books/%s", wordId))
+            .put(String.format("/books/%s", bookId))
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .content(updatedJson);
@@ -232,7 +232,7 @@ class BookControllerTest extends TerraformProviderServerApplicationTests {
 
         JsonNode responseBody = JsonHelpers.getResponseBody(getResponse);
         String errorMessage = responseBody.get("message").asText();
-        assertThat(errorMessage, is(String.format("The book with ID '%s' does not exist", wordId)));
+        assertThat(errorMessage, is(String.format("The book with ID '%s' does not exist", bookId)));
     }
 
     @Test
@@ -252,10 +252,10 @@ class BookControllerTest extends TerraformProviderServerApplicationTests {
         assertThat(createResponse.getStatus(), is(HttpStatus.CREATED.value()));
 
         JsonNode createResponseBody = JsonHelpers.getResponseBody(createResponse);
-        String wordId = createResponseBody.get("id").asText();
+        String bookId = createResponseBody.get("id").asText();
 
         MockHttpServletRequestBuilder delete = MockMvcRequestBuilders
-            .delete(String.format("/books/%s", wordId))
+            .delete(String.format("/books/%s", bookId))
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON);
 
