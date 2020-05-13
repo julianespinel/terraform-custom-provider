@@ -124,7 +124,8 @@ func resourceWordUpdate(d *schema.ResourceData, m interface{}) error {
 
 func resourceWordDelete(d *schema.ResourceData, m interface{}) error {
 	log.Info("Deleting word")
-	resp, err := httpDelete(d.Id())
+	url := fmt.Sprintf(SingleWordUrl, d.Id())
+	resp, err := httpDelete(url)
 	if err != nil {
 		log.WithError(err).Error("resourceWordDelete")
 		return err

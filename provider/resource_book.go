@@ -130,13 +130,15 @@ func resourceBookUpdate(d *schema.ResourceData, m interface{}) error {
 		log.WithError(err).Error("resourceBookUpdate")
 		return err
 	}
-	setId(d, bookResponse)
+	//setId(d, bookResponse)
+	d.SetId(bookResponse.Id)
 	return nil
 }
 
 func resourceBookDelete(d *schema.ResourceData, m interface{}) error {
 	log.Info("Deleting book")
-	resp, err := httpDelete(d.Id())
+	url := fmt.Sprintf(SingleBookUrl, d.Id())
+	resp, err := httpDelete(url)
 	if err != nil {
 		log.WithError(err).Error("resourceBookDelete")
 		return err
