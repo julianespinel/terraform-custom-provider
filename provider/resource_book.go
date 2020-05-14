@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/dchest/uniuri"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -14,6 +15,7 @@ import (
 const (
 	BooksUrl      = "http://localhost:8010/books"
 	SingleBookUrl = BooksUrl + "/%s"
+	defaultTitle = "title"
 )
 
 // Returns the resource represented by this file.
@@ -46,6 +48,11 @@ func resourceBook() *schema.Resource {
 func resourceBookCreate(d *schema.ResourceData, m interface{}) error {
 	log.Info("Creating book")
 	title := d.Get("title").(string)
+	// Add random string to title if needed.
+	if title == defaultTitle {
+		title = title + "." + getRandomString()
+	}
+
 	author := d.Get("author").(string)
 	bookRequest := BookRequest{Title: title, Author: author}
 	buffer := new(bytes.Buffer)
