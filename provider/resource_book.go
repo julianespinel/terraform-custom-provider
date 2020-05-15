@@ -30,12 +30,13 @@ func resourceBook() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"title": &schema.Schema{
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true, // If a value is given we will use it.
+				Computed: true, // If no value is given we will compute a random one.
 				ForceNew: true, // When this field changes, the object will be deleted and replaced by a new one.
 			},
 			"author": &schema.Schema{
 				Type:     schema.TypeString,
-				Optional: true,
+				Optional: true, // Optional, if not given will be empty
 			},
 		},
 	}
@@ -44,10 +45,7 @@ func resourceBook() *schema.Resource {
 func resourceBookCreate(d *schema.ResourceData, m interface{}) error {
 	log.Info("Creating book")
 	title := d.Get("title").(string)
-	// Add random string to title if needed.
-	if title == defaultTitle {
-		title = title + "." + getRandomString()
-	}
+	title = addRandomnessIfNeeded(d, title)
 
 	author := d.Get("author").(string)
 	bookRequest := BookRequest{Title: title, Author: author}
@@ -77,10 +75,6 @@ func resourceBookCreate(d *schema.ResourceData, m interface{}) error {
 	 * https://www.terraform.io/docs/extend/writing-custom-providers.html#error-handling-amp-partial-state
 	 */
 	return nil
-}
-
-func getRandomString() string {
-	return uniuri.NewLen(16)
 }
 
 func resourceBookRead(d *schema.ResourceData, m interface{}) error {
@@ -115,6 +109,9 @@ func resourceBookUpdate(d *schema.ResourceData, m interface{}) error {
 	log.Info("Updating book")
 	title := d.Get("title").(string)
 	author := d.Get("author").(string)
+
+	title = addRandomnessIfNeeded(d, title)
+
 	bookRequest := BookRequest{Title: title, Author: author}
 	buffer := new(bytes.Buffer)
 	json.NewEncoder(buffer).Encode(bookRequest)
@@ -168,4 +165,12 @@ func getBookResponse(resp *http.Response) (BookResponse, error) {
 		return bookResponse, err
 	}
 	return bookResponse, nil
+}
+
+func addRandomnessIfNeeded(d *schema.ResourceData, title string) string {
+	if title == "" {
+		title = "generated.title." + uniuri.NewLen(16)
+		d.Set("title", title)
+	}
+	return title
 }
