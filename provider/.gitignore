@@ -2,4 +2,4 @@
 .terraform/
 terraform.tfstate
 terraform.tfstate.backup
-terraform-provider-words
+terraform-provider-dummy

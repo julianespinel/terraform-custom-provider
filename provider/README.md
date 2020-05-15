@@ -1,6 +1,6 @@
 # Terraform custom provider
 
-This custom provider knows how to manage the `word` resource provided by the [server](../server/README.md)
+This custom provider knows how to manage resources provided by the [server](../server/README.md)
 
 ## Provider structure
 
@@ -9,6 +9,7 @@ The following tree shows the structure of the provider and what is the responsib
 ```bash
 .
 ├── README.md
+├── constants.go: file to declare constants used by other files
 ├── go.mod: file to declare a module and its dependencies
 ├── go.sum: contains the expected cryptographic checksums of the content of specific module versions
 ├── httpHelpers.go: contains functions related to HTTP requests and responses
@@ -16,7 +17,8 @@ The following tree shows the structure of the provider and what is the responsib
 ├── main.tf: Terraform configuration file used to test this custom provider
 ├── models.go: file to define data structures used in the program
 ├── provider.go: file used to define the resources supported by this provider
-├── resource_word.go: file to define the `word` resource and interacts with the server
+├── resource_book.go: file to define the `book` resource and interact with the server
+├── resource_word.go: file to define the `word` resource and interact with the server
 ```
 
 ## Dependencies
@@ -31,13 +33,13 @@ The following tree shows the structure of the provider and what is the responsib
 To be able to see the logs from the custom provider please do the following: `export TF_LOG=TRACE`<br>
 Then after you enter a Terraform command in the terminal, search for the lines containing:
 ```bash
-plugin.terraform-provider-words
+plugin.terraform-provider-dummy
 ```
 
 You can use the custom provider by executing the following commands:
 
 1. Make sure the server is running. See: [Server install and run](../server/README.md#install-and-run)
-1. `go build -o terraform-provider-words`
+1. `go build -o terraform-provider-dummy`
     1. Create the provider binary: the name of the binary must follow this convention: `terraform-<TYPE>-<NAME>`
 1. `terraform init`: Download and install providers used in the Terraform configuration file (`main.tf`)
 
@@ -46,7 +48,7 @@ You can use the custom provider by executing the following commands:
 Modify the file `main.tf` to look like this:
 
 ```hcl
-resource "words_word" "my-word" {
+resource "dummy_word" "my-word" {
     value = "hello"
 }
 ```
@@ -69,7 +71,7 @@ Terraform will do this under the hood when you execute other operations such as:
 Modify the file `main.tf` to look like this:
 
 ```hcl
-resource "words_word" "my-word" {
+resource "dummy_word" "my-word" {
     value = "bye"
 }
 ```
