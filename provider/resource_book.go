@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	"strings"
 )
 
 const (
@@ -29,13 +28,10 @@ func resourceBook() *schema.Resource {
 
 		// Define the fields of this schema.
 		Schema: map[string]*schema.Schema{
-			"book_id": &schema.Schema{
-				Type:     schema.TypeString,
-				Optional: true,
-			},
 			"title": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true, // When this field changes, the object will be deleted and replaced by a new one.
 			},
 			"author": &schema.Schema{
 				Type:     schema.TypeString,
@@ -74,13 +70,17 @@ func resourceBookCreate(d *schema.ResourceData, m interface{}) error {
 		log.WithError(err).Error("resourceBookCreate")
 		return err
 	}
-	setId(d, bookResponse)
+	d.SetId(bookResponse.Id)
 	/*
 	 * Why return nil?
 	 * Please take a look at the rules for update the state in Terraform defined here:
 	 * https://www.terraform.io/docs/extend/writing-custom-providers.html#error-handling-amp-partial-state
 	 */
 	return nil
+}
+
+func getRandomString() string {
+	return uniuri.NewLen(16)
 }
 
 func resourceBookRead(d *schema.ResourceData, m interface{}) error {
@@ -106,7 +106,7 @@ func resourceBookRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	setId(d, bookResponse)
+	d.Set("title", bookResponse.Title)
 	d.Set("author", bookResponse.Author)
 	return nil
 }
@@ -137,15 +137,15 @@ func resourceBookUpdate(d *schema.ResourceData, m interface{}) error {
 		log.WithError(err).Error("resourceBookUpdate")
 		return err
 	}
-	//setId(d, bookResponse)
+
 	d.SetId(bookResponse.Id)
 	return nil
 }
 
 func resourceBookDelete(d *schema.ResourceData, m interface{}) error {
 	log.Info("Deleting book")
-	url := fmt.Sprintf(SingleBookUrl, d.Id())
-	resp, err := httpDelete(url)
+	bookURL := fmt.Sprintf(SingleBookUrl, d.Id())
+	resp, err := httpDelete(bookURL)
 	if err != nil {
 		log.WithError(err).Error("resourceBookDelete")
 		return err
@@ -168,11 +168,4 @@ func getBookResponse(resp *http.Response) (BookResponse, error) {
 		return bookResponse, err
 	}
 	return bookResponse, nil
-}
-
-func setId(d *schema.ResourceData, bookResponse BookResponse) {
-	noSpacesTitle := strings.ReplaceAll(bookResponse.Title, " ", "_")
-	d.SetId(strings.ToLower(noSpacesTitle))
-	d.Set("book_id", bookResponse.Id)
-	d.Set("title", bookResponse.Title)
 }
