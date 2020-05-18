@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/dchest/uniuri"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -14,7 +13,6 @@ import (
 const (
 	BooksUrl      = "http://localhost:8010/books"
 	SingleBookUrl = BooksUrl + "/%s"
-	defaultTitle = "title"
 )
 
 // Returns the resource represented by this file.
@@ -30,8 +28,7 @@ func resourceBook() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"title": &schema.Schema{
 				Type:     schema.TypeString,
-				Optional: true, // If a value is given we will use it.
-				Computed: true, // If no value is given we will compute a random one.
+				Required: true,
 				ForceNew: true, // When this field changes, the object will be deleted and replaced by a new one.
 			},
 			"author": &schema.Schema{
@@ -45,7 +42,6 @@ func resourceBook() *schema.Resource {
 func resourceBookCreate(d *schema.ResourceData, m interface{}) error {
 	log.Info("Creating book")
 	title := d.Get("title").(string)
-	title = addRandomnessIfNeeded(d, title)
 
 	author := d.Get("author").(string)
 	bookRequest := BookRequest{Title: title, Author: author}
@@ -110,8 +106,6 @@ func resourceBookUpdate(d *schema.ResourceData, m interface{}) error {
 	title := d.Get("title").(string)
 	author := d.Get("author").(string)
 
-	title = addRandomnessIfNeeded(d, title)
-
 	bookRequest := BookRequest{Title: title, Author: author}
 	buffer := new(bytes.Buffer)
 	json.NewEncoder(buffer).Encode(bookRequest)
@@ -165,12 +159,4 @@ func getBookResponse(resp *http.Response) (BookResponse, error) {
 		return bookResponse, err
 	}
 	return bookResponse, nil
-}
-
-func addRandomnessIfNeeded(d *schema.ResourceData, title string) string {
-	if title == "" {
-		title = "generated.title." + uniuri.NewLen(16)
-		d.Set("title", title)
-	}
-	return title
 }
